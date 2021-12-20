@@ -54,7 +54,7 @@ int main(int argc, const char **argv)
     
 
     float start_x, start_y, end_x, end_y;
-    std::cout << "Enter the start_x, start_y, end_x, end_y coordinates: " << std::endl;
+    std::cout << "Enter the start x, start y, end x, end y coordinates between 0 - 99: " << std::endl;
     std::cin >> start_x >> start_y >> end_x >> end_y;
 
     // Build Model.
