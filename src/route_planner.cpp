@@ -38,40 +38,39 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
         open_list.emplace_back(neighbor);
         neighbor->visited = true;
     }
-
-
-
 }
 
-
-// TODO 5: Complete the NextNode method to sort the open list and return the next node.
-// Tips:
-// - Sort the open_list according to the sum of the h value and g value.
-// - Create a pointer to the node in the list with the lowest sum.
-// - Remove that node from the open_list.
-// - Return the pointer.
 
 RouteModel::Node *RoutePlanner::NextNode() {
-
+    // Sort the open_list according to the sum of the h value and g value
+    std::sort(open_list.begin(), open_list.end(), [](const auto & _1st , const auto & _2nd)
+    {
+        return (_1st->g_value + _1st->h_value) < (_2nd->g_value + _2nd->h_value);
+    });
+    // Create a pointer to the node in the list with the lowest sum and remove that node from the open_list
+    RouteModel::Node* lowest_node = open_list.front();
+    open_list.erase(open_list.begin())
+    return lowest_node;
 }
 
-
-// TODO 6: Complete the ConstructFinalPath method to return the final path found from your A* search.
-// Tips:
-// - This method should take the current (final) node as an argument and iteratively follow the 
-//   chain of parents of nodes until the starting node is found.
-// - For each node in the chain, add the distance from the node to its parent to the distance variable.
-// - The returned vector should be in the correct order: the start node should be the first element
-//   of the vector, the end node should be the last element.
+// This method take the current (final) node as an argument and iteratively follow the chain of parents of nodes until the starting node is found
+// The start node of the returned vector is be the first element of the vector, the end node is the last element
 
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
     // Create path_found vector
     distance = 0.0f;
     std::vector<RouteModel::Node> path_found;
-
-    // TODO: Implement your solution here.
-
-    distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
+  
+    while (current_node->parent != nullptr)
+    {
+        path_found.emplace_back(*current_node);
+        const RouteModel::Node parent = *(current_node->parent);
+        distance += current_node->distance(parent);
+        current_node = current_node->parent;
+    }
+    
+    path_found.emplace_back(*current_node);
+    distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters
     return path_found;
 
 }
