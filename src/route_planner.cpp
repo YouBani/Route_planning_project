@@ -28,7 +28,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     for(auto neighbor : current_node->neighbors){
         neighbor->parent = current_node;
         neighbor->h_value = CalculateHValue(neighbor);
-        neighbor->g_value = g_value + current_node->distance(*neighbor);
+        neighbor->g_value = current_node->g_value + current_node->distance(*neighbor);
         open_list.emplace_back(neighbor);
         neighbor->visited = true;
     }
@@ -37,12 +37,12 @@ void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
 
 RouteModel::Node *RoutePlanner::NextNode() {
     // Sort the open_list according to the sum of the h value and g value
-    std::sort(open_list.begin(), open_list.end(), [](const auto & _1st , const auto & _2nd)
+    std::sort(open_list.begin(), open_list.end(), [](const auto &_1st , const auto &_2nd)
     {
         return (_1st->g_value + _1st->h_value) < (_2nd->g_value + _2nd->h_value);
     });
     // Create a pointer to the node in the list with the lowest sum and remove that node from the open_list
-    RouteModel::Node* lowest_node = open_list.front();
+    RouteModel::Node *lowest_node = open_list.front();
     open_list.erase(open_list.begin())
     return lowest_node;
 }
@@ -52,13 +52,15 @@ RouteModel::Node *RoutePlanner::NextNode() {
 // The start node of the returned vector is be the first element of the vector, the end node is the last element
 std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node *current_node) {
     // Create path_found vector
-    distance = 0.0f;
+  	distance = 0.0f;
     std::vector<RouteModel::Node> path_found;
+  	RouteModel::Node parent;
   
     while (current_node->parent != nullptr)
     {
-        path_found.emplace_back(*current_node);
-        const RouteModel::Node parent = *(current_node->parent);
+      	path_found.emplace_back(*current_node);
+//         const RouteModel::Node parent = *(current_node->parent);
+      	parent = *(current_node->parent);
         distance += current_node->distance(parent);
         current_node = current_node->parent;
     }
@@ -76,7 +78,7 @@ void RoutePlanner::AStarSearch() {
     while (open_list.size()>0)
     {
         // Use the NextNode() method to sort the open_list and return the next node
-        RouteModel::Node* current_node = NextNode();
+        current_node = NextNode();
         
         if (current_node->distance(*end_node) == 0)
         {

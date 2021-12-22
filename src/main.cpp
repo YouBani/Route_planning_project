@@ -54,8 +54,18 @@ int main(int argc, const char **argv)
     
 
     float start_x, start_y, end_x, end_y;
-    std::cout << "Enter the start x, start y, end x, end y coordinates between 0 - 100: " << std::endl;
-    std::cin >> start_x >> start_y >> end_x >> end_y;
+    std::cout << "The map coordinates begin at (0,0) in the lower left corner, and end at (100,100= in the upper right." << "\n";
+    std::cout << "Enter a start x between 0 and 100 : ";
+    std::cin >> start_x;
+
+    std::cout << "Enter a start y between 0 and 100 : ";
+    std::cin >> start_y;
+
+    std::cout << "Enter a end x between 0 and 100 : ";
+    std::cin >> end_x;
+
+    std::cout << "Enter a end y between 0 and 100 : ";
+    std::cin >> end_y;
 
     // Build Model.
     RouteModel model{osm_data};
